@@ -1,0 +1,471 @@
+<p-confirmDialog [style]="{width: '50vw'}"></p-confirmDialog>
+
+<div align="right">
+    <button type="button" label="Nuevo" pButton icon="pi pi-save"
+        class="p-button-success p-button-raised p-button-rounded" style="margin-right: 2%"
+        (click)="viewNuevoRegistro()"></button>
+
+</div>
+<div style="margin-top: 5px;"></div>
+
+<p-toast></p-toast>
+
+<!-- Consumimos nuestra columnas dinamicas de la variable cols, que declaramos en paisee.componenent.ts -->
+<p-table [value]="empleados" [resizableColumns]="true" [columns]="cols" [paginator]="true" [rows]="5"
+    [(selection)]="seleccionarFila" styleClass="p-datatable-sm" selectionMode="single" dataKey="empleadoID">
+    <ng-template pTemplate="caption">
+        <div class="ui-helper-clearfix" style="font-size:24px;text-align: center">
+            <span class="ui-panel-title" style="font-size:24px;display:inline-block;margin-top:2px"></span>
+            Catalogo de Empleados
+        </div>
+    </ng-template>
+
+
+    <ng-template pTemplate="header" let-columns>
+        <tr>
+            <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                {{col.header}}
+                <p-sortIcon [field]="col.field"></p-sortIcon>
+            </th>
+            <th>
+                Acción
+            </th>
+        </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-empleados>
+        <tr [pSelectableRow]="empleados">
+
+            <td>
+                {{empleados.empleadoID}}
+            </td>
+
+            <td>
+                {{empleados.dni}}
+            </td>
+
+            <td>
+                {{empleados.nombres}}
+            </td>
+
+            <td>
+                {{empleados.primerApellido}}
+            </td>
+
+            <td>
+                {{empleados.segundoApellido}}
+            </td>
+
+            <td>
+                {{empleados.fecIngreso | date:"dd/MM/yyyy"}}
+            </td>
+
+
+            <td>
+                {{empleados.catEstados.descripcion}}
+            </td>
+
+            <!--
+            <td>
+                {{empleados.impSalario | number:'1.2' }}
+            </td>
+            -->
+
+            <td>
+
+                <button pButton icon="pi pi-pencil" style="margin-left: 5px;"
+                    class="p-button-secondary p-button-raised p-button-rounded"
+                    (click)="oprimirBoton(empleados,'U')"></button>
+
+                <button pButton icon="pi pi-trash" style="margin-left: 5px;"
+                    class="p-button-danger p-button-raised p-button-rounded"
+                    (click)="oprimirBoton(empleados,'D')"></button>
+
+            </td>
+
+        </tr>
+    </ng-template>
+</p-table>
+<br />
+
+
+<p-dialog header="Crear un nuevo Empleado" [(visible)]="frmCrear" [responsive]="true" showEffect="fade" [modal]="true"
+    position="top" [style]="{width : '50%', height: '80%'}">
+    <div class="p-grid" [formGroup]="formCrear">
+        <div class="grid">
+            <div>
+                <div class="col">
+                    <div class="form-group">
+
+                        <div class="p-field p-fluid">
+                            <label for="txtnombres">Nombres</label>
+                            <input pInputText placeholder="Ingrese los nombres" pInputText [(ngModel)]="entidad.nombres"
+                                required minlength="3" maxlength="30" class="form-control"
+                                [ngClass]="{ 'is-invalid': submitted && createField.nombres.errors }"
+                                formControlName="nombres">
+                        </div>
+                        <div class="textbox-danger" *ngIf="submitted && createField.nombres.errors">
+                            <div class="alert-danger" *ngIf="nombres.errors.required">
+                                Los nombres son requeridos.
+                            </div>
+                            <div class="alert-danger" *ngIf="nombres.errors?.minlength">
+                                El nombre no puede ser menor de 3 digitos.
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="p-field p-fluid">
+                            <label for="txtapellido1">Primer apellido</label>
+                            <input pInputText id="txtapellido1" [(ngModel)]="entidad.primerApellido" required
+                                minlength="3" maxlength="30" class="form-control"
+                                [ngClass]="{ 'is-invalid': submitted && createField.apellido1.errors }"
+                                formControlName="apellido1" />
+                        </div>
+                        <div class="textbox-danger" *ngIf="submitted && createField.apellido1.errors">
+                            <div class="alert-danger" *ngIf="apellido1.errors.required">
+                                El primer apellido es requerido.
+                            </div>
+                            <div class="alert-danger" *ngIf="apellido1.errors?.minlength">
+                                El primer apellido no puede ser menor de 3 digitos.
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        <div class="p-field p-fluid">
+                            <label for="txtapellido2">Segundo apellido</label>
+                            <input pInputText id="txtapellido2" [(ngModel)]="entidad.segundoApellido"
+                                class="form-control" maxlength="30"
+                                [ngClass]="{ 'is-invalid': submitted && createField.apellido2.errors}"
+                                formControlName="apellido2" />
+                        </div>
+                        <div *ngIf="submitted && createField.apellido2.errors">
+                            <div class="alert-danger" *ngIf="apellido2.errors.required">
+                                El segundo apellido es requerido.
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- CBO DE PUESTO -->
+                    <div class="form-group">
+                        <div class="p-field p-fluid">
+                            <label for="cbopuesto">Puesto</label>
+                            <p-dropdown [options]="itemsPuestos" [(ngModel)]="seleccionarPuesto"
+                                (onChange)="onCboPuestoChange($event)" placeholder="Seleccionar puesto">
+                            </p-dropdown>
+                        </div>
+                    </div>
+                    <!-- FIN CBO DE PUESTO -->
+
+                    <!-- CBO DE AREA -->
+                    <div class="form-group">
+                        <div class="p-field p-fluid">
+                            <label for="cboArea">Area</label>
+                            <p-dropdown [options]="itemsAreas" [(ngModel)]="seleccionarArea"
+                                (onChange)="onCboAreaChange($event)" placeholder="Seleccionar puesto">
+                            </p-dropdown>
+                        </div>
+                    </div>
+                    <!-- CBO DE AREA -->
+
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="form-group">
+                    <div class="p-field p-fluid">
+                        <label for="txtdni1">DNI</label>
+                        <input pInputText id="txtdni1" [(ngModel)]="entidad.dni" required minlength="11" maxlength="13"
+                            [ngClass]="{ 'is-invalid': submitted && createField.dni.errors }" formControlName="dni" />
+                    </div>
+                    <div *ngIf="submitted && createField.dni.errors">
+                        <div class="alert-danger" *ngIf="dni.errors.required">
+                            El DNI es requerido.
+                        </div>
+                        <div class="alert-danger" *ngIf="dni.errors?.minlength">
+                            El DNI no pueder menor de 13 digitos.
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+                    <div class="p-field p-fluid">
+                        <label for="txtfec1">Fecha Ingreso</label>
+                        <p-calendar [(ngModel)]="entidad.fecIngreso" [showIcon]="true" [inline]="false"
+                            [monthNavigator]="true" [yearNavigator]="true" dateFormat="dd/mm/yy">
+                        </p-calendar>
+                    </div>
+                </div>
+
+                <div class="form-group">
+
+                    <div class="p-field p-fluid">
+                        <label for="txtsalario1">Salario</label>
+                        <p-inputNumber [(ngModel)]="entidad.impSalario" mode="decimal" locale="en-US"
+                            [showButtons]="true" [min]="100" [max]="10000" [minFractionDigits]="2">
+                        </p-inputNumber>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <div class="p-field p-fluid">
+                        <label for="cboprofesiones">Profesion</label>
+                        <p-dropdown [options]="itemsProfesiones" [(ngModel)]="seleccionarProfesion" [filter]="true"
+                            (onChange)="onCboProfesionChange($event)" placeholder="Seleccionar profesion">
+                        </p-dropdown>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="p-field p-fluid">
+                        <label for="cboEstado">Estado</label>
+                        <p-dropdown [options]="itemEstados" [(ngModel)]="seleccionarEstado" optionLabel="descripcion"
+                            (onChange)="onCboEstadoChange($event)" placeholder="Seleccionar puesto">
+                        </p-dropdown>
+
+                    </div>
+                </div>
+
+                <!-- <p>codigo estado: {{seleccionarEstado||'none'}}</p>-->
+
+            </div>
+
+        </div>
+
+
+        <p-footer>
+            <div class="ui-dialog-buttonpane ui-helper-clearfix">
+                <button type="submit" pButton icon="fa fa-check" (click)="cmdcrearnuevoregistro()"
+                    label="Guardar"></button>
+
+            </div>
+
+
+        </p-footer>
+
+
+        <!-- 
+    <p>Form status: {{ frmmain.status | json }}</p>
+-->
+    </div>
+</p-dialog>
+
+
+
+<p-dialog header="Editar Registro" [(visible)]="frmEditar" [responsive]="true" showEffect="fade" [modal]="true"
+    position="top" [style]="{width : '50%', height: '90%'}">
+
+    <div [formGroup]="formEditar">
+
+        <div class="ui-g ui-fluid" *ngIf="empleados">
+            <div class="grid">
+
+                <div class="col">
+                    <div class="ui-g-12">
+                        <div class="form-group">
+                            <div class="p-field p-fluid">
+
+                                <label for="txtnombres">Nombres</label>
+                                <input name="enombres" pInputText [(ngModel)]="seleccionarFila.nombres" required
+                                    minlength="3" maxlength="30" class="form-control"
+                                    [ngClass]="{ 'is-invalid': submitted && editField.enombres.errors }"
+                                    formControlName="enombres" />
+                            </div>
+                            <div class="textbox-danger" *ngIf="submitted && editField.enombres.errors">
+                                <div class="alert-danger" *ngIf="enombres.errors.required">
+                                    Los nombres son requeridos.
+                                </div>
+                                <div class="alert-danger" *ngIf="enombres.errors?.minlength">
+                                    El nombre no puede ser menor de 3 digitos.
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+                            <div class="p-field p-fluid">
+                                <label for="etxtapellido">Primer apellido</label>
+                                <input name="etxtapellido" pInputText [(ngModel)]="seleccionarFila.primerApellido"
+                                    minlength="3" maxlength="30" class="form-control"
+                                    [ngClass]="{ 'is-invalid': submitted && editField.eapellido1.errors }"
+                                    formControlName="eapellido1" />
+                            </div>
+                            <div class="textbox-danger" *ngIf="submitted && editField.eapellido1.errors">
+                                <div class="alert-danger" *ngIf="eapellido1.errors.required">
+                                    El primer apellido es requerido.
+                                </div>
+                                <div class="alert-danger" *ngIf="eapellido1.errors?.minlength">
+                                    El primer apellido no puede ser menor de 3 digitos.
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+                            <div class="p-field p-fluid">
+                                <label for="etxtapellido">Segundo apellido</label>
+                                <input name="etxtapellido" pInputText [(ngModel)]="seleccionarFila.segundoApellido"
+                                    class="form-control"
+                                    [ngClass]="{ 'is-invalid': submitted && editField.eapellido2.errors }"
+                                    formControlName="eapellido2" />
+                            </div>
+                        </div>
+
+                        <!-- CBO DE PUESTO -->
+                        <div class="form-group">
+                            <div class="p-field p-fluid">
+                                <label for="ecbopuesto">Puesto</label>
+                                <p-dropdown [options]="itemsPuestos" optionLabel="label"
+                                    formControlName="selectedPuesto" (onChange)="onCboPuestoChange($event)"
+                                    placeholder="Seleccionar puesto">
+                                </p-dropdown>
+
+                            </div>
+                        </div>
+
+                        <!-- FIN CBO DE PUESTO -->
+
+                        <!-- CBO DE AREAS -->
+                        <div class="form-group">
+                            <div class="p-field p-fluid">
+                                <label for="ecboareas">Areas</label>
+                                <p-dropdown [options]="itemsAreas" optionLabel="label" formControlName="selectedArea"
+                                    (onChange)="onCboAreaChange($event)" placeholder="Seleccione el area">
+                                </p-dropdown>
+
+                            </div>
+                        </div>
+
+                        <!-- FIN CBO DE AREAS -->
+
+
+                    </div> <!-- FIN DE DIV CLASE-->
+
+                </div> <!-- FIN COLUMNA 1-->
+
+                <!-- COLUMNA 2 -->
+                <div class="col">
+                    <div>
+
+                        <div class="form-group">
+
+                            <div class="p-field p-fluid">
+                                <label for="etxtdni">DNI</label>
+                                <input name="etxtdni" pInputText [(ngModel)]="seleccionarFila.dni" class="form-control"
+                                    [ngClass]="{ 'is-invalid': submitted && editField.edni.errors }"
+                                    formControlName="edni" />
+                            </div>
+
+                        </div>
+                        <div class="form-group">
+                            <div class="p-field p-fluid">
+                                <label for="etxtfecIngreso">Fecha Ingreso</label>
+                                <p-calendar [(ngModel)]="seleccionarFila.fecIngreso" [showIcon]="true"
+                                    [monthNavigator]="true" [yearNavigator]="true" dateFormat="dd/mm/yy"
+                                    class="form-control"
+                                    [ngClass]="{ 'is-invalid': submitted && editField.efechaIngreso.errors }"
+                                    formControlName="efechaIngreso">
+                                </p-calendar>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="p-field p-fluid">
+                                <label for="etxtSalario">Salario</label>
+                                <p-inputNumber name="etxtSalario" mode="decimal" [minFractionDigits]="2" locale="en-US"
+                                    [(ngModel)]="seleccionarFila.impSalario"
+                                    [ngClass]="{ 'is-invalid': submitted && editField.eimpSalario.errors }"
+                                    formControlName="eimpSalario">
+                                </p-inputNumber>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <!-- CBO DE PROFESIONES -->
+                    <div class="form-group">
+                        <div class="p-field p-fluid">
+                            <label for="ecboprofesiones">Profesion</label>
+                            <p-dropdown [options]="itemsProfesiones" optionLabel="label"
+                                formControlName="selectedProfesion" (onChange)="onCboProfesionChange($event)"
+                                placeholder="Seleccionar profesion">
+                            </p-dropdown>
+
+                        </div>
+                    </div>
+
+                    <!-- FIN CBO DE PROFESIONES -->
+
+
+                    <!-- CBO DE ESTADOS -->
+                    <div class="form-group">
+                        <div class="p-field p-fluid">
+                            <label for="ecboestados">Estados</label>
+                            <p-dropdown [options]="itemEstados" optionLabel="descripcion"
+                                formControlName="selectedEstado" (onChange)="onCboEstadoChange($event)"
+                                placeholder="Seleccione el estado">
+                            </p-dropdown>
+
+                        </div>
+                    </div>
+                    <!-- FIN CBO DE ESTADOS -->
+
+
+                </div> <!-- COLUMNA 2-->
+
+            </div> <!-- FIN DE DIV CLASE GRID-->
+
+        </div> <!-- FIN DE DIV CLASE ui-g ui-fluid-->
+
+
+
+        <p-footer>
+            <div class="ui-dialog-buttonpane ui-helper-clearfix">
+                <button type="button" pButton icon="fa fa-check" (click)="cmdmodificarregistro()"
+                    label="Guardar"></button>
+            </div>
+        </p-footer>
+    </div>
+
+
+</p-dialog>
+
+<p-dialog header="Borrar Registro" [(visible)]="frmBorrar" [responsive]="true" showEffect="fade" [modal]="true"
+    position="center" [style]="{width : '50%', height: '50%'}" icon="pi pi-exclamation-triangle">
+
+
+    <div class="ui-g ui-fluid" *ngIf="empleados">
+        <div class="ui-g-12">
+
+            <div class="ui-g-4">
+                <label for="empleadoid">Id</label>
+            </div>
+            <div class="ui-g-8">
+                <input pInputText id="empleadoid" [(ngModel)]="seleccionarFila.empleadoID" />
+            </div>
+
+
+            <div class="ui-g-4">
+                <label for="nombres">Nombres</label>
+            </div>
+            <div class="ui-g-8">
+                <input pInputText id="nombres" [(ngModel)]="seleccionarFila.nombres" />
+            </div>
+
+
+        </div>
+    </div>
+    <p-footer>
+        <div class="ui-dialog-buttonpane ui-helper-clearfix">
+            <button type="button" pButton icon="pi pi-check" (click)="cmdborraregistro()" label="Continuar"></button>
+        </div>
+    </p-footer>
+
+</p-dialog>

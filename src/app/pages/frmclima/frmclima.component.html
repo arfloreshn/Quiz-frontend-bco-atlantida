@@ -1,0 +1,63 @@
+<!--{{climas}}-->
+
+<p-panel header="Clima">
+
+    <input type="text" pInputText />
+
+    <button pButton type="button" style="margin-left: 5px;" class="p-button-raised p-button-rounded"
+        label="Mi ubicacion"></button>
+    <button pButton type="button" style="margin-left: 5px;" class="p-button-raised p-button-rounded"
+        label="Buscar"></button>
+</p-panel>
+
+<div style="margin-top: 5px;"></div>
+
+<p-table [value]="climas" responsiveLayout="scroll">
+    <ng-template pTemplate="header">
+        <tr>
+            <th>Sabado</th>
+            <th>Domingo</th>
+            <th>Lunes</th>
+            <th>Martes</th>
+            <th>Miercoles</th>
+            <th>Jueves</th>
+            <th>Viernes</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-clima>
+        <tr>
+            <td>{{clima.next_days[1].day}}
+                <br />
+                <img alt="" src="https://ssl.gstatic.com/onebox/weather/48/partly_cloudy.png" />
+            </td>
+            <td>{{clima.next_days[2].day}}
+                <br />
+                <p-image src="https://ssl.gstatic.com/onebox/weather/48/partly_cloudy.png"></p-image>
+            </td>
+            <td>{{clima.next_days[3].day}}
+                <br />
+                <p-image src="https://ssl.gstatic.com/onebox/weather/48/rain_light.png"></p-image>
+            </td>
+            <td>{{clima.next_days[4].day}}
+                <br />
+                <p-image src="https://ssl.gstatic.com/onebox/weather/48/partly_cloudy.png"></p-image>
+            </td>
+            <td>{{clima.next_days[5].day}}
+                <br />
+                <p-image src="https://ssl.gstatic.com/onebox/weather/48/partly_cloudy.png"></p-image>
+            </td>
+            <td>
+                {{clima.next_days[6].day}}
+                <br />
+                <p-image src="https://ssl.gstatic.com/onebox/weather/48/rain_light.png"></p-image>
+            </td>
+            <td>{{clima.next_days[7].day}}
+                <br />
+                <div>
+                    <p-image alt="" src="https://ssl.gstatic.com/onebox/weather/48/rain_s_cloudy.png"></p-image>
+                </div>
+
+            </td>
+        </tr>
+    </ng-template>
+</p-table>

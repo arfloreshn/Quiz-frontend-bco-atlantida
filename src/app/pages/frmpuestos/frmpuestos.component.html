@@ -1,0 +1,162 @@
+<p-confirmDialog [style]="{width: '50vw'}" [baseZIndex]="10000"></p-confirmDialog>
+
+<!-- Consumimos nuestra columnas dinamicas de la variable cols, que declaramos en paisee.componenent.ts -->
+<p-table [value]="puestos" 
+[resizableColumns]="true" [columns]="cols" [paginator]="true" [rows]="5"
+    [(selection)]="seleccionarFila"
+    styleClass="p-datatable-sm p-datatable-gridlines" 
+    selectionMode="single"
+    dataKey="puestoId">
+    <ng-template pTemplate="caption">
+        <div class="ui-helper-clearfix" style="font-size:24px;text-align: center">
+            <span class="ui-panel-title" style="font-size:24px;display:inline-block;margin-top:2px"></span>
+            Catalogo de Puestos
+        </div>
+    </ng-template>
+
+
+    <ng-template pTemplate="header" let-columns>
+        <tr>
+            <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                {{col.header}}
+                <p-sortIcon [field]="col.field"></p-sortIcon>
+            </th>
+            <th>
+                Acción
+            </th>
+        </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-puestos>
+        <tr [pSelectableRow]="puestos">
+
+            <td>
+                {{puestos.puestoId}}
+            </td>
+
+            <td>
+                {{puestos.descripcion}}
+            </td>
+
+
+            <td>
+                <button type="button" pButton icon="pi pi-save"
+                    class="p-button-success p-button-raised p-button-rounded" (click)="viewNuevoRegistro()"></button>
+
+                <button pButton icon="pi pi-pencil"  style="margin-left: 5px;" class="p-button-secondary p-button-raised p-button-rounded"
+                    (click)="oprimirBoton(puestos,'U')"></button>
+
+                <button pButton icon="pi pi-trash" style="margin-left: 5px;" class="p-button-danger p-button-raised p-button-rounded"
+                    (click)="oprimirBoton(puestos,'D')"></button>
+
+            </td>
+
+        </tr>
+    </ng-template>
+</p-table>
+
+<!-- 
+*********************************************************************************
+  CREAR CUADROS DE DIALOGO
+********************************************************************************
+-->
+
+<p-dialog header="Crear un nueva registro" [(visible)]="frmCrear" [responsive]="true" showEffect="fade" [modal]="true"
+    [style]="{'width' : '700px'}">
+
+    <form class="p-grid" [formGroup]="frmmain">
+
+        <div class="grid">
+            <div>
+                <div class="col">
+                    <div class="form-group">
+
+                        <div class="p-field p-fluid">
+                            <label for="descripcion">Descripcion</label>
+                            <input formControlName="descripcion" pInputText [(ngModel)]="entidad.descripcion"
+                                placeholder="Ingrese el puesto" size="80" />
+                            <p-message severity="error"
+                                [text]="frmmain.controls['descripcion'].errors['required'] ? 'El puesto es requerido' : frmmain.controls['descripcion'].errors['minlength'] ? 'Must be longer than 6 characters' : ''"
+                                *ngIf="!frmmain.controls['descripcion'].valid&&frmmain.controls['descripcion'].dirty">
+                            </p-message>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <p-footer>
+            <div class="ui-dialog-buttonpane ui-helper-clearfix">
+                <button type="submit" pButton icon="fa fa-check" (click)="cmdcrearnuevoregistro(frmmain.value)"
+                    label="Guardar"></button>
+            </div>
+
+        </p-footer>
+
+    </form>
+
+</p-dialog>
+
+
+
+<p-dialog header="Editar Registro" 
+   [(visible)]="frmEditar" [responsive]="true" showEffect="fade" [modal]="true"
+    [style]="{width: '700px'}">
+
+    <div class="ui-g ui-fluid" *ngIf="puestos">
+
+        <div class="grid">
+            <div class="col">
+                <div class="ui-g-12">
+                    <div class="ui-g-4">
+                        <label for="txtpuesto">Puesto</label>
+                    </div>
+                    <input name="puesto" id="txtpuesto" 
+                    pInputText [(ngModel)]="seleccionarFila.descripcion" size="80" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <p-footer>
+        <div class="ui-dialog-buttonpane ui-helper-clearfix">
+            <button type="button" pButton icon="fa fa-check" (click)="cmdmodificarregistro()" label="Guardar"></button>
+        </div>
+    </p-footer>
+</p-dialog>
+
+<p-dialog header="Borrar Registro" [(visible)]="frmBorrar" 
+    [responsive]="true" showEffect="fade" [modal]="true"
+    icon="pi pi-exclamation-triangle" [style]="{width: '700px'}">
+
+   
+        <div class="ui-g ui-fluid" *ngIf="seleccionarFila">
+            <div class="ui-g-12">
+
+                <div class="ui-g-4">
+                    <label for="id">Id</label>
+                </div>
+                <div class="ui-g-8">
+                    <input pInputText id="id" [(ngModel)]="seleccionarFila.puestoId" readonly="true" />
+                </div>
+
+
+                <div class="ui-g-4">
+                    <label for="descripcion">Puesto</label>
+                </div>
+                <div class="ui-g-8">
+                    <input pInputText id="descripcion" [(ngModel)]="seleccionarFila.descripcion" />
+                </div>
+
+
+            </div>
+        </div>
+       
+        <p-footer>
+            <div class="ui-dialog-buttonpane ui-helper-clearfix">
+                <button type="button" pButton icon="pi pi-check" (click)="cmdborraregistro()"
+                    label="Continuar"></button>
+            </div>
+        </p-footer>
+    
+</p-dialog>

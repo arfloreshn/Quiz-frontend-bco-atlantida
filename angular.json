@@ -1,9 +1,12 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "cli": {
+    "analytics": "3248a935-8a60-4ae2-bb67-15fd37ac3a11"
+  },
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "frontendAduanas": {
+    "quizfrontend": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -40,16 +43,17 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/frontendAduanas",
+            "outputPath": "dist/quizfrontend",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
+            "assets": ["src/favicon.ico", "src/assets"],
             "styles": [
+              "node_modules/primeng/resources/themes/nova-accent/theme.css",
+              "node_modules/primeng/resources/primeng.min.css",
+              "node_modules/primeicons/primeicons.css",
+              "node_modules/primeflex/primeflex.css",
               "src/styles.css"
             ],
             "scripts": []
@@ -91,10 +95,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "frontendAduanas:build:production"
+              "browserTarget": "quizfrontend:build:production"
             },
             "development": {
-              "browserTarget": "frontendAduanas:build:development"
+              "browserTarget": "quizfrontend:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -102,11 +106,11 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "frontendAduanas:build"
+            "browserTarget": "quizfrontend:build"
           }
         }
       }
     }
   },
-  "defaultProject": "frontendAduanas"
+  "defaultProject": "quizfrontend"
 }

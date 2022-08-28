@@ -1,19 +1,19 @@
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap");
 
 @font-face{font-family:"FontAwesome";
-           src: url(./assets/fonts/fontawesome-webfont.woff) ;
-            src: url(./assets/fonts/fontawesome-webfont.eot);
-            src: url(./assets/fonts/fontawesome-webfont.eot) format("embedded-opentype");
-            src: url(./assets/fonts/fontawesome-webfont.woff2) format("woff2");
-            src: url(./assets/fonts/fontawesome-webfont.woff) format("woff");
-            src: url(./assets/fonts/fontawesome-webfont.ttf) format("truetype");
-            src:  url(./assets/fonts/fontawesome-webfont.svg) format("svg");
+           src: url(/fonts/fontawesome-webfont.woff) ;
+            src: url(/fonts/fontawesome-webfont.eot);
+            src: url(/fonts/fontawesome-webfont.eot) format("embedded-opentype");
+            src: url(/fonts/fontawesome-webfont.woff2) format("woff2");
+            src: url(/fonts/fontawesome-webfont.woff) format("woff");
+            src: url(/fonts/fontawesome-webfont.ttf) format("truetype");
+            src:  url(/fonts/fontawesome-webfont.svg) format("svg");
                font-weight: normal;
                font-style : normal;
                }
 
                @font-face{font-family:"AstroSpace";
-               src: url(./assets/fonts/AstroSpace.ttf) ;
+               src: url(../fonts/AstroSpace.ttf) ;
                }
 
                * {
@@ -30,7 +30,7 @@
                background-repeat: no-repeat; */
                background-color: white;
                font-family: Verdana, sans-serif;
-               font-size: 14px;
+               font-size: 1em;
                width: 100vw;
                height: 100vh;
                }
